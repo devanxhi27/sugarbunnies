@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      /*Create a container to keep the player’s viewport static*/
+      /*Use overflow: hidden to mask the area outside of the viewport*/
+      .main_viewport {
+        margin: auto;
+        position: relative;
+        overflow: hidden;
+      }
+
+      /* Apply a radial gradient effect to enhance viewport's design */
+      .main_viewport::after {
+        position: absolute;
+        content: "";
+        background: radial-gradient(
+          circle,
+          rgba(0, 0, 0, 0) 0%,
+          rgba(0, 0, 0, 0) 43%,
+          rgba(0, 0, 0, 1) 100%
+        );
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        z-index: 2;
+      }
+
+      /*Use position absolute to make the entired maze moveable*/
+      /*Apply transition effect for seamless animation*/
+      .maze_container {
+        height: 100vh;
+        position: absolute;
+        transition: 0.3s linear all;
+        display: grid;
+      }
+
+      /*Style the main avatar*/
+      .main_viewport::before {
+        position: absolute;
+        content: "";
+        width: 60px;
+        height: 80px;
+        left: calc(50% - 5px);
+        top: calc(50% - 5px);
+        z-index: 2;
+        background-image: url("https://shorturl.at/f0E7E"); /* Replace with your image URL */
+        background-size: cover; /* Ensure the image covers the element */
+        background-position: center; /* Center the image */
+      }
+
+      /*Style the winning effect*/
+      .main_viewport.win::before {
+        background-color: purple;
+      }
+
+      /*Style all the Pathways*/
+      .path_1,
+      .path_2,
+      .path_3,
+      .path_4,
+      .path_5,
+      .end {
+        background-size: cover;
+        position: relative;
+        width: 100%;
+        height: 100%;
+      }
+
+      .path_1 {
+        background-image: url(img/path_1.png);
+      }
+      .path_2 {
+        background-image: url(img/path_2.png);
+      }
+      .path_3 {
+        background-image: url(img/path_3.png);
+      }
+      .path_4 {
+        background-image: url(img/path_4.png);
+      }
+      .path_5 {
+        background-image: url(img/path_5.png);
+      }
+      .end {
+        background-image: url(img/end.png);
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="main_viewport">
+      <div class="maze_container"></div>
+    </div>
+
+    <script>
+      // Select the HTML container where the viewport will be held
+      const main = document.querySelector(".main_viewport");
+
+      // Select the HTML container where the maze will be displayed
+      const container = document.querySelector(".maze_container");
+
+      // Define the dimension of each grid item in pixels
+      const gridSize = 700;
+
+      // Define the maze structure as a 2D array with paths, walls and end point
+      const maze = [
+        ["path_1", "path_2", "path_3"],
+        ["wall", "path_4", "wall"],
+        ["path_1", "path_5", "end"],
+      ];
+
+      // Define the desired start and end point
+      const startpoint = { x: 0, y: 0 };
+      const endpoint = { x: 2, y: 2 };
+
+      //Generate CSS dynamically
+      container.style.gridTemplateColumns =
+        "repeat(" + maze[0].length + ", " + gridSize + "px)";
+      container.style.gridTemplateRows =
+        "repeat(" + maze.length + ", " + gridSize + "px)";
+
+      main.style.width = gridSize + "px";
+      main.style.height = gridSize + "px";
+
+      // main.style.width = "95vw";
+      // main.style.height = "95vh";
+
+      container.style.left = -(startpoint.x * gridSize) + "px";
+      container.style.top = -(startpoint.y * gridSize) + "px";
+
+      // Generate a 3x3 loop to create grid items
+      for (let i = 0; i < maze.length; i++) {
+        for (let j = 0; j < maze[i].length; j++) {
+          const cell = document.createElement("div");
+          cell.classList.add(maze[i][j]);
+          container.appendChild(cell);
+        }
+      }
+
+      //Initiate the starting row & column position
+      let playerRow = startpoint.x;
+      let playerCol = startpoint.y;
+
+      //Initiate the maze's container position
+      let topPosition = container.offsetTop;
+      let leftPosition = container.offsetLeft;
+
+      //Add an event listener to listen for key-down events
+      document.addEventListener("keydown", (event) => {
+        const key = event.key;
+
+        if (!container.classList.contains("win")) {
+          const key = event.key;
+          if (key === "ArrowUp") {
+            if (playerRow > 0 && maze[playerRow - 1][playerCol] !== "wall") {
+              playerRow--;
+              topPosition += gridSize;
+              container.style.top = topPosition + "px";
+            }
+          } else if (key === "ArrowDown") {
+            if (
+              playerRow < maze.length - 1 &&
+              maze[playerRow + 1][playerCol] !== "wall"
+            ) {
+              playerRow++;
+              topPosition -= gridSize;
+              container.style.top = topPosition + "px";
+            }
+          } else if (key === "ArrowLeft") {
+            if (playerCol > 0 && maze[playerRow][playerCol - 1] !== "wall") {
+              playerCol--;
+              leftPosition += gridSize;
+              container.style.left = leftPosition + "px";
+            }
+          } else if (key === "ArrowRight") {
+            if (
+              playerCol < maze[0].length - 1 &&
+              maze[playerRow][playerCol + 1] !== "wall"
+            ) {
+              playerCol++;
+
+              if (leftPosition >= -(gridSize * endpoint.x)) {
+                leftPosition -= gridSize;
+                leftPosition == -(gridSize * endpoint.x);
+                container.style.left = leftPosition + "px";
+              }
+            }
+          }
+
+          //check if the player has reached the end-point and won the game, if yes, apply winning effect
+          if (maze[playerRow][playerCol] === "end") {
+            setTimeout(() => {
+              main.classList.add("win");
+              container.style.left = -(gridSize * endpoint.x) + "px";
+              return false;
+            }, 100);
+          }
+        }
+      });
+    </script>
+  </body>
+</html>
