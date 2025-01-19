@@ -46,8 +46,10 @@ body {
 }
 
 h1 {
-  font-family: Papyrus, fantasy;
+  /* font-family: Papyrus, fantasy; */
+  font-family: 'Wicked Mouse', sans-serif;                                     
   font-weight: 900;
+  letter-spacing: 4px;
 }
 
 a {
