@@ -1,204 +1,252 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <style>
-      /*Create a container to keep the player’s viewport static*/
-      /*Use overflow: hidden to mask the area outside of the viewport*/
-      .main_viewport {
-        margin: auto;
-        position: relative;
-        overflow: hidden;
-      }
+<head>
+   <title>Valentine's Day - Dungeon Trivia Game ❤</title>
+  
+   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+   <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="wrap">
+   <h1 style="margin-top: 20px;"><b>Dunge<span style="font-size: 27px;">❤</span>n Trivia Game</b></h1>
+      <div class="main">
+         <div class="container"></div>
+         <div class="intro">
+            <div>
+               Welcome to the Dungeon Trivia Game! Find the way out using the arrow keys and answering questions. Good luck!
+               <div class="btn_start">Start</div>
+            </div>
+         </div>
+      </div>
 
-      /* Apply a radial gradient effect to enhance viewport's design */
-      .main_viewport::after {
-        position: absolute;
-        content: "";
-        background: radial-gradient(
-          circle,
-          rgba(0, 0, 0, 0) 0%,
-          rgba(0, 0, 0, 0) 43%,
-          rgba(0, 0, 0, 1) 100%
-        );
-        left: 0;
-        right: 0;
-        top: 0;
-        bottom: 0;
-        z-index: 2;
-      }
+      <br>
+      <br>
+      <div style="font-size: 15px;">Move through the dungeon game and find the end point by using the arrow keys on your keyboard. You will stumble upon trivia. </div>
+      <!-- <p style="font-size: 12px;">For the full step by step tutorial, check this link:<a href="https://uipencil.com/2023/04/12/how-to-build-a-mini-maze-game-using-html-css-and-javascript/">click me - back to tutorial</a> </p> -->
+      <p style="font-size: 12px;">You must answer the trivia to continue exploring. Good luck! ❤</p>
+      <br>
+      <br>
 
-      /*Use position absolute to make the entired maze moveable*/
-      /*Apply transition effect for seamless animation*/
-      .maze_container {
-        height: 100vh;
-        position: absolute;
-        transition: 0.3s linear all;
-        display: grid;
-      }
+      <p style="font-size: 10px;">From Raven, on Valentine's Day 2025 ❤</p>
 
-      /*Style the main avatar*/
-      .main_viewport::before {
-        position: absolute;
-        content: "";
-        width: 60px;
-        height: 80px;
-        left: calc(50% - 5px);
-        top: calc(50% - 5px);
-        z-index: 2;
-        background-image: url("https://shorturl.at/f0E7E"); /* Replace with your image URL */
-        background-size: cover; /* Ensure the image covers the element */
-        background-position: center; /* Center the image */
-      }
+      <div class="modal" tabindex="-1" id="triviaModal">
+         <div class="modal-dialog">
+           <div class="modal-content">
+             <div class="modal-header">
+               <h5 class="modal-title">Modal title</h5>
+               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+             </div>
+             <div class="modal-body">
+               <p id="questionText"></p>
+               <button class="answer-btn" data-correct="false">Option 1</button>
+               <button class="answer-btn" data-correct="true">Option 2</button>
+               <button class="answer-btn" data-correct="false">Option 3</button>
+               <button class="answer-btn" data-correct="false">Option 4</button>
+             </div>
+             <div class="modal-footer">
+               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+               <button type="button" class="btn btn-primary">Save changes</button>
+             </div>
+           </div>
+         </div>
+       </div>
+  </div>
 
-      /*Style the winning effect*/
-      .main_viewport.win::before {
-        background-color: purple;
-      }
 
-      /*Style all the Pathways*/
-      .path_1,
-      .path_2,
-      .path_3,
-      .path_4,
-      .path_5,
-      .end {
-        background-size: cover;
-        position: relative;
-        width: 100%;
-        height: 100%;
-      }
+   <script>
 
-      .path_1 {
-        background-image: url(img/path_1.png);
-      }
-      .path_2 {
-        background-image: url(img/path_2.png);
-      }
-      .path_3 {
-        background-image: url(img/path_3.png);
-      }
-      .path_4 {
-        background-image: url(img/path_4.png);
-      }
-      .path_5 {
-        background-image: url(img/path_5.png);
-      }
-      .end {
-        background-image: url(img/end.png);
-      }
-    </style>
-  </head>
+      const button = document.querySelector('.btn_start');
+      const intro_msg = document.querySelector('.intro');
+      const container = document.querySelector(".container");
+      const main = document.querySelector(".main");
+      const gridSize = 400;
+      const startpoint = { x: 2, y: 4 };
+      const endpoint = { x: 4, y: 0 };
 
-  <body>
-    <div class="main_viewport">
-      <div class="maze_container"></div>
-    </div>
 
-    <script>
-      // Select the HTML container where the viewport will be held
-      const main = document.querySelector(".main_viewport");
 
-      // Select the HTML container where the maze will be displayed
-      const container = document.querySelector(".maze_container");
-
-      // Define the dimension of each grid item in pixels
-      const gridSize = 700;
-
-      // Define the maze structure as a 2D array with paths, walls and end point
       const maze = [
-        ["path_1", "path_2", "path_3"],
-        ["wall", "path_4", "wall"],
-        ["path_1", "path_5", "end"],
+         ["path_7_rgt", "path_hori", "path_hori", "path_hori", "path_7_lft"],
+         ["path_vert", "wall", "wall", "wall", "end"],
+         ["path_T_rgt", "path_hori", "path_T_down", "path_treasure", "wall"],
+         ["path_vert_up", "wall", "path_vert", "wall", "wall"],
+         ["wall", "path_hori_rgt", "path_cross", "path_hori", "path_7_lft"],
+         ["path_portal_2", "wall", "path_vert", "wall", "path_vert"],
+         ["path_L_rgt", "path_hori", "path_cross", "path_hori", "path_T_lft"],
+         ["wall", "wall", "path_vert", "wall", "path_portal_1"],
+         ["path_hori_rgt", "path_hori", "path_T_up", "path_hori_lft", "wall"],
       ];
 
-      // Define the desired start and end point
-      const startpoint = { x: 0, y: 0 };
-      const endpoint = { x: 2, y: 2 };
+      
 
-      //Generate CSS dynamically
-      container.style.gridTemplateColumns =
-        "repeat(" + maze[0].length + ", " + gridSize + "px)";
-      container.style.gridTemplateRows =
-        "repeat(" + maze.length + ", " + gridSize + "px)";
-
-      main.style.width = gridSize + "px";
-      main.style.height = gridSize + "px";
-
-      // main.style.width = "95vw";
-      // main.style.height = "95vh";
-
-      container.style.left = -(startpoint.x * gridSize) + "px";
-      container.style.top = -(startpoint.y * gridSize) + "px";
-
-      // Generate a 3x3 loop to create grid items
+      let maze_l2_length =  0;
       for (let i = 0; i < maze.length; i++) {
-        for (let j = 0; j < maze[i].length; j++) {
-          const cell = document.createElement("div");
-          cell.classList.add(maze[i][j]);
-          container.appendChild(cell);
-        }
+         
+         for (let j = 0; j < maze[i].length; j++) {
+            const cell = document.createElement("div");
+            cell.classList.add(maze[i][j]);
+            container.appendChild(cell);
+         }
       }
 
-      //Initiate the starting row & column position
-      let playerRow = startpoint.x;
-      let playerCol = startpoint.y;
+      //Generate CSS dynamically
+      container.style.gridTemplateColumns = 'repeat('+ maze[0].length +', '+gridSize+'px)';
+      container.style.gridTemplateRows = 'repeat('+maze.length+', '+gridSize+'px)';
+      main.style.width = gridSize + "px";
+      main.style.height = gridSize + "px";
+      intro_msg.style.width = gridSize + "px";
+      intro_msg.style.height = gridSize + "px";
+      container.style.left = - (startpoint.x * gridSize) + "px";
+      container.style.top = - (startpoint.y * gridSize) + "px";
 
-      //Initiate the maze's container position
-      let topPosition = container.offsetTop;
-      let leftPosition = container.offsetLeft;
 
-      //Add an event listener to listen for key-down events
-      document.addEventListener("keydown", (event) => {
-        const key = event.key;
+      button.addEventListener('click', () => {
+         intro_msg.style.display = "none";
+         startGame();
+      })
 
-        if (!container.classList.contains("win")) {
-          const key = event.key;
-          if (key === "ArrowUp") {
-            if (playerRow > 0 && maze[playerRow - 1][playerCol] !== "wall") {
-              playerRow--;
-              topPosition += gridSize;
-              container.style.top = topPosition + "px";
+      function startGame() {
+         let playerRow = startpoint.y;
+         let playerCol = startpoint.x;
+         let topPosition = container.offsetTop;
+         let leftPosition = container.offsetLeft;
+         document.addEventListener("keydown", (event) => {
+
+            if (!main.classList.contains("success")) {
+               const key = event.key;
+               if (key === "ArrowUp") {
+                  if (playerRow > 0 && maze[playerRow - 1][playerCol] !== "wall") {
+                     playerRow--;
+                     topPosition += gridSize;
+                     container.style.top = topPosition + "px";
+                  }
+               } else if (key === "ArrowDown") {
+                  if (playerRow < maze.length - 1 && maze[playerRow + 1][playerCol] !== "wall") {
+                     playerRow++;
+                     topPosition -= gridSize;
+                     container.style.top = topPosition + "px";
+                  }
+               } else if (key === "ArrowLeft") {
+                  if (playerCol > 0 && maze[playerRow][playerCol - 1] !== "wall") {
+                     playerCol--;
+                     leftPosition += gridSize;
+                     container.style.left = leftPosition + "px";
+
+                     main.classList.add("flip");
+
+                  }
+               } else if (key === "ArrowRight") {
+                  if (playerCol < maze[0].length - 1 && maze[playerRow][playerCol + 1] !== "wall") {
+                     playerCol++;
+
+                     if (leftPosition >= -(gridSize * endpoint.x)) {
+                        leftPosition -= gridSize;
+                        leftPosition == -(gridSize * endpoint.x);
+                        container.style.left = leftPosition + "px";
+                     }
+
+                     main.classList.remove("flip");
+                  }
+               }
+
+              
+
+               const portal_1 = { x: 4, y: (7-1) };
+               const portal_2 = { x: 0, y: (5+1) };
+
+               if (maze[playerRow][playerCol] === "path_treasure") {
+                  showTrivia();
+               }
+               if(maze[playerRow][playerCol] === "path_portal_1"){
+                  playerCol = portal_2.x;
+                  playerRow = portal_2.y;
+                  leftPosition = - (portal_2.x) * gridSize;
+                  topPosition = - (portal_2.y)  * gridSize;
+                 
+                  setTimeout(() => {
+                     main.classList.add("portal");
+                     container.classList.add("no_animation");
+                     container.style.top = topPosition + "px";
+                     container.style.left = leftPosition + "px";
+                     return false;
+                  }, 1000);
+                  setTimeout(() => {
+                     main.classList.remove("portal");
+                     container.classList.remove("no_animation");
+                     return false;
+                  }, 2500);
+               }
+               else if(maze[playerRow][playerCol] === "path_portal_2"){
+                  playerCol = portal_1.x;
+                  playerRow = portal_1.y;
+                  leftPosition = - (portal_1.x) * gridSize;
+                  topPosition = - (portal_1.y)  * gridSize;
+                 
+                  setTimeout(() => {
+                     main.classList.add("portal");
+                     container.classList.add("no_animation");
+                     container.style.top = topPosition + "px";
+                     container.style.left = leftPosition + "px";
+                    
+                     return false;
+                  }, 1000);
+                  setTimeout(() => {
+                     main.classList.remove("portal");
+                     container.classList.remove("no_animation");
+                     return false;
+                  }, 2500);
+               }
+               else if (maze[playerRow][playerCol] === "end") {
+                  setTimeout(() => {
+                     main.classList.add("success");
+                     container.style.left = -(gridSize * endpoint.x) + "px";
+                     return false;
+                  }, 1000);
+               } 
+
             }
-          } else if (key === "ArrowDown") {
-            if (
-              playerRow < maze.length - 1 &&
-              maze[playerRow + 1][playerCol] !== "wall"
-            ) {
-              playerRow++;
-              topPosition -= gridSize;
-              container.style.top = topPosition + "px";
-            }
-          } else if (key === "ArrowLeft") {
-            if (playerCol > 0 && maze[playerRow][playerCol - 1] !== "wall") {
-              playerCol--;
-              leftPosition += gridSize;
-              container.style.left = leftPosition + "px";
-            }
-          } else if (key === "ArrowRight") {
-            if (
-              playerCol < maze[0].length - 1 &&
-              maze[playerRow][playerCol + 1] !== "wall"
-            ) {
-              playerCol++;
+         });
 
-              if (leftPosition >= -(gridSize * endpoint.x)) {
-                leftPosition -= gridSize;
-                leftPosition == -(gridSize * endpoint.x);
-                container.style.left = leftPosition + "px";
-              }
-            }
-          }
 
-          //check if the player has reached the end-point and won the game, if yes, apply winning effect
-          if (maze[playerRow][playerCol] === "end") {
-            setTimeout(() => {
-              main.classList.add("win");
-              container.style.left = -(gridSize * endpoint.x) + "px";
-              return false;
-            }, 100);
-          }
-        }
-      });
-    </script>
-  </body>
+
+      }
+
+
+      const triviaQuestions = [
+         {
+            question: "What is 2 + 2?",
+            options: ["3", "4", "5", "6"],
+            correct: 1, // Index of the correct option
+         },
+         // Add more questions
+      ];
+
+      function showTrivia() {
+         const modal = document.getElementById("triviaModal");
+         const questionText = document.getElementById("questionText");
+         const answerButtons = document.querySelectorAll(".answer-btn");
+
+         const question = triviaQuestions[Math.floor(Math.random() * triviaQuestions.length)];
+         questionText.textContent = question.question;
+         answerButtons.forEach((button, index) => {
+            button.textContent = question.options[index];
+            button.dataset.correct = index === question.correct;
+            button.onclick = () => {
+               if (button.dataset.correct === "true") {
+                  alert("Correct!");
+                  modal.remove()
+               } else {
+                  alert("Wrong! Try again.");
+                  window.location.reload();
+               }
+               modal.style.display = "none";
+            };
+         });
+
+         modal.style.display = "flex";
+      }
+
+   </script>
+</body>
 </html>
