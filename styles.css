@@ -451,10 +451,41 @@ a {
   animation: monsteranimate 1s ease infinite;
 }
 .container > div.end {
-  background-image: url(img/path_end.png);
+  background-image: url(img/unnamed2.png);
   background-size: cover;
 }
 .container > div.wall {
   background-image: url(img/wall.png);
   background-size: cover;
 }/*# sourceMappingURL=maze.css.map */
+
+
+.answer-btn {
+  margin: 10px;
+}
+
+ /* Cute Answer Buttons */
+ .cute-answer-btn {
+  background-color: #ff99cc;
+  border: none;
+  padding: 12px;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: bold;
+  color: white;
+  cursor: pointer;
+  width: 100%;
+  transition: 0.3s;
+}
+
+.cute-answer-btn:hover {
+  background-color: #ff66a3;
+}
+
+.cute-answer-btn:active {
+  background-color: #ff3385;
+}
+
+.to-back {
+  z-index: -1;
+}

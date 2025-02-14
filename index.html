@@ -1,25 +1,35 @@
 <!DOCTYPE html>
 <html>
+
 <head>
    <title>Valentine's Day - Dungeon Trivia Game ❤</title>
-  
-   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
+   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
    <link href="https://fonts.cdnfonts.com/css/wicked-mouse" rel="stylesheet">
-                
-   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
+   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+      crossorigin="anonymous"></script>
+
+   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+
    <link rel="stylesheet" href="styles.css">
-   <link rel="shortcut icon" type="image/x-icon" href="https://media.stickerswiki.app/milk_mocha_daily_emoji_by_cocopry/158264.512.webp" />
-  
-                
+   <link rel="shortcut icon" type="image/x-icon" href="https://www.svgrepo.com/show/299502/heart.svg" />
+
+
 </head>
+
 <body>
-  <div class="wrap">
-   <h1 style="margin-top: 40px;"><b>Dunge<span style="font-size: 42px;">❤</span>n Trivia Game</b></h1>
+   <div class="wrap">
+      <h1 style="margin-top: 40px;"><b>Dunge<span style="font-size: 42px;">❤</span>n Trivia Game</b></h1>
       <div class="main">
          <div class="container"></div>
          <div class="intro">
             <div>
-               Welcome to the Dungeon Trivia Game! Find the way out using the arrow keys and answering questions. Good luck!
+               Welcome to the Dungeon Trivia Game! Find the way out using the arrow keys and answering questions. Good
+               luck!
                <div class="btn_start">Start</div>
             </div>
          </div>
@@ -27,38 +37,155 @@
 
       <br>
       <br>
-      <div style="font-size: 15px;">Move through the dungeon game and find the end point by using the arrow keys on your keyboard. You will stumble upon trivia. </div>
-      <p style="font-size: 12px;">You must answer the trivia to continue exploring. Good luck! ❤</p>
+      <div id="gameOngoing">
+         <div style="font-size: 15px;">Move through the tunnel path and find the end point by using the arrow keys on
+            your
+            keyboard. You will stumble upon trivia. </div>
+         <p style="font-size: 12px;">You must answer the trivia to continue exploring. Good luck! ❤</p>
+
+      </div>
+
+      <div id="toast-container"
+         class="position-fixed d-flex justify-content-center align-items-center w-100 h-100 top-0 left-0">
+      </div>
+
       <br>
       <br>
 
       <p style="font-size: 10px;">From Raven, on Valentine's Day 2025 ❤</p>
 
+      <!-- Progress Modal -->
+      <div class="modal" tabindex="-1" id="progressModal">
+         <div class="modal-dialog">
+            <div class="modal-content" style="background-color: #ffd1dc; text-align: center; border-radius: 20px;">
+               <div class="modal-header">
+                  <h5 class="modal-title" style="color: #ff69b4;">🎀 Game Progress 🍫</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+               </div>
+               <div class="modal-body">
+                  <p id="progressText" style="font-size: 20px; font-weight: bold;">0/20 Chokos 🍫</p>
+                  <div class="progress" style="height: 20px; border-radius: 10px;">
+                     <div id="progressBar" class="progress-bar" style="width: 0%; background-color: #ff69b4;"></div>
+                  </div>
+                  <p style="font-size: 14px; margin-top: 10px;">💖 Keep going, you're doing great! 💖</p>
+               </div>
+               <div class="modal-footer">
+                  <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+               </div>
+            </div>
+         </div>
+      </div>
+
+      <!-- Trivia Modal -->
       <div class="modal" tabindex="-1" id="triviaModal">
          <div class="modal-dialog">
-           <div class="modal-content">
-             <div class="modal-header">
-               <h5 class="modal-title">Modal title</h5>
-               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-             </div>
-             <div class="modal-body">
-               <p id="questionText"></p>
-               <button class="answer-btn" data-correct="false">Option 1</button>
-               <button class="answer-btn" data-correct="true">Option 2</button>
-               <button class="answer-btn" data-correct="false">Option 3</button>
-               <button class="answer-btn" data-correct="false">Option 4</button>
-             </div>
-             <div class="modal-footer">
-               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-               <button type="button" class="btn btn-primary">Save changes</button>
-             </div>
-           </div>
+            <div class="modal-content" style="background-color: #ffd1dc; text-align: center; border-radius: 20px;">
+               <div class="modal-header">
+                  <h5 class="modal-title" style="color: #ff69b4;">🎀 Trivia Time! 🍬</h5>
+                  <!-- <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> -->
+               </div>
+               <div class="modal-body">
+                  <p id="triviaQuestion" style="font-size: 18px; font-weight: bold; color: #ff4081;"></p>
+                  <div id="answerButtons" class="d-flex flex-column gap-2"></div>
+               </div>
+               <div class="modal-footer">
+                  <!-- <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button> -->
+               </div>
+            </div>
          </div>
-       </div>
-  </div>
+      </div>
+   </div>
 
 
    <script>
+
+const triviaQuestions = [
+         {
+            question: "In one episode of Gintama, Kagura buys chocolates for Valentine's Day. Who does she give them to?",
+            options: ["Katsura and Elizabeth", "Gintoki", "Gintoki and Shinpachi", "Madao"],
+            correct: 2, // Index of the correct option
+         },
+         {
+            question: "In Chihayafuru, what does Sumire give to Taichi on Valentine's Day?",
+            options: ["Chocolate", "Fermented Squid", "Mochi Bites", "Pickled Sardines"],
+            correct: 1, // Index of the correct option
+         },
+         {
+            question: "What popular Valentine's Day activity is commonly seen in high school anime?",
+            options: [
+               "Confessing love through notes",
+               "Distributing chocolate to crushes",
+               "Organizing a school dance",
+               "Exchanging roses in class"
+            ],
+            correct: 1, // Index of the correct option
+         },
+         {
+            question: "What type of chocolate is given to male friends on Valentine's Day in Japan?",
+            options: ["Honmei Choco", "Giri Choco", "Tomo Choco", "Mecha Choco"],
+            correct: 1, // Index of the correct option
+         },
+         {
+            question: "What holiday is traditionally celebrated one month after Valentine's Day in Japan?",
+            options: ["White Day", "Chocolate Day", "Love Day", "Red Day"],
+            correct: 0, // Index of the correct option
+         },
+         {
+            question: "What are the names of the main couple in the series Wotakoi: Love is Hard for an Otaku?",
+            options: ["Nanami & Tomoe", "Sakura & Nozaki", "Hanako & Hirotaka", "Narumi & Hirotaka"],
+            correct: 3, // Index of the correct option
+         },
+         {
+            question: "In the anime Orange, does Naho end up giving her chocolate to Kakeru?",
+            options: ["Yes", "No"],
+            correct: 0, // Index of the correct option
+         },
+         {
+            question: "In Code Geass, Milly Ashford initiates Cupid Day, a graduation event revolving around what?",
+            options: [
+               "Stealing kisses",
+               "Stealing hats",
+               "Baking homemade chocolate",
+               "Switching uniforms"
+            ],
+            correct: 1, // Index of the correct option
+         },
+         {
+            question: "In the Valentine's Day episode of Lovely★Complex, Risa bakes Otani a chocolate cake. Did Otani know that she liked him then?",
+            options: ["Yes", "No"],
+            correct: 0, // Index of the correct option
+         },
+         {
+            question: "In Frieren: Beyond Journey’s End, Himmel kneels in front of Frieren and slides the mirrored-lotus ring on her finger in one of her flashbacks. What does the flower symbolize?",
+            options: [
+               "Sincere Love",
+               "Tender Love",
+               "Love at First Sight",
+               "Eternal Love"
+            ],
+            correct: 3, // Index of the correct option
+         },
+         {
+            question: "In Fairy Tail, what does Juvia do on the anniversary of meeting Gray to show her love for him?",
+            options: [
+               "Knits him a scarf",
+               "Bakes him a cake",
+               "Writes him a love poem",
+               "Confesses her feelings again"
+            ],
+            correct: 0, // Index of the correct option
+         },
+         {
+            question: "Which of the following romance anime have I not seen?",
+            options: [
+               "Toradora",
+               "Gekkan shoujo Nozaki kun",
+               "Snow White with the red hair",
+               "My Dress Up Darling"
+            ],
+            correct: 0, // Index of the correct option
+         }
+      ];
 
       const button = document.querySelector('.btn_start');
       const intro_msg = document.querySelector('.intro');
@@ -67,26 +194,28 @@
       const gridSize = 400;
       const startpoint = { x: 2, y: 4 };
       const endpoint = { x: 4, y: 0 };
-
-
+      let chokoCount = 0;
+      const winCount = triviaQuestions.length;
+      // const winCount = 2;
+      let isTriviaActive = false;
 
       const maze = [
          ["path_7_rgt", "path_hori", "path_hori", "path_hori", "path_7_lft"],
          ["path_vert", "wall", "wall", "wall", "end"],
-         ["path_T_rgt", "path_hori", "path_T_down", "path_treasure", "wall"],
+         ["path_T_rgt", "path_hori", "path_T_down", "path_hori_lft", "wall"],
          ["path_vert_up", "wall", "path_vert", "wall", "wall"],
          ["wall", "path_hori_rgt", "path_cross", "path_hori", "path_7_lft"],
          ["path_portal_2", "wall", "path_vert", "wall", "path_vert"],
          ["path_L_rgt", "path_hori", "path_cross", "path_hori", "path_T_lft"],
          ["wall", "wall", "path_vert", "wall", "path_portal_1"],
-         ["path_hori_rgt", "path_hori", "path_T_up", "path_hori_lft", "wall"],
+         ["path_hori_rgt", "path_hori", "path_T_up", "design_2_1", "wall"],
       ];
 
-      
 
-      let maze_l2_length =  0;
+
+      let maze_l2_length = 0;
       for (let i = 0; i < maze.length; i++) {
-         
+
          for (let j = 0; j < maze[i].length; j++) {
             const cell = document.createElement("div");
             cell.classList.add(maze[i][j]);
@@ -95,8 +224,8 @@
       }
 
       //Generate CSS dynamically
-      container.style.gridTemplateColumns = 'repeat('+ maze[0].length +', '+gridSize+'px)';
-      container.style.gridTemplateRows = 'repeat('+maze.length+', '+gridSize+'px)';
+      container.style.gridTemplateColumns = 'repeat(' + maze[0].length + ', ' + gridSize + 'px)';
+      container.style.gridTemplateRows = 'repeat(' + maze.length + ', ' + gridSize + 'px)';
       main.style.width = gridSize + "px";
       main.style.height = gridSize + "px";
       intro_msg.style.width = gridSize + "px";
@@ -110,105 +239,175 @@
          startGame();
       })
 
+      document.getElementById('progressModal').addEventListener('hidden.bs.modal', function () {
+         document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
+         document.body.classList.remove('modal-open'); // Prevents body from staying in modal state
+      });
+
+
+      function updateProgressModal() {
+         // Update progress text
+         document.getElementById("progressText").innerHTML = `${chokoCount}/${winCount} Chokos 🍫`;
+
+         // Update progress bar
+         let progressPercentage = (chokoCount / winCount) * 100;
+         document.getElementById("progressBar").style.width = `${progressPercentage}%`;
+
+         // Show the modal
+         let progressModal = new bootstrap.Modal(document.getElementById("progressModal"));
+         progressModal.show();
+      }
+
+
+
+
+
       function startGame() {
          let playerRow = startpoint.y;
          let playerCol = startpoint.x;
          let topPosition = container.offsetTop;
          let leftPosition = container.offsetLeft;
+         // let isTriviaActive = isTriviaActive;
+
+         let movementCount = 0; // Counter to track the distance the player moves
+
          document.addEventListener("keydown", (event) => {
+            console.log({ isTriviaActive: isTriviaActive });
+            if (!isTriviaActive) {
+               if (!main.classList.contains("success")) {
+                  const key = event.key;
+                  var triviaModalOpen = $('#triviaModal') != null && $('#triviaModal') != undefined && $('#triviaModal').hasClass('show');
+                  // console.log({triviaModalOpen: triviaModalOpen});
+                  if (!isTriviaActive) {
+                     if (key === "ArrowUp") {
+                        if (playerRow > 0 && maze[playerRow - 1][playerCol] !== "wall") {
+                           playerRow--;
+                           topPosition += gridSize;
+                           container.style.top = topPosition + "px";
+                           movementCount += gridSize;
+                        }
+                     } else if (key === "ArrowDown") {
+                        if (playerRow < maze.length - 1 && maze[playerRow + 1][playerCol] !== "wall") {
+                           playerRow++;
+                           topPosition -= gridSize;
+                           container.style.top = topPosition + "px";
+                           movementCount += gridSize;
+                        }
+                     } else if (key === "ArrowLeft") {
+                        if (playerCol > 0 && maze[playerRow][playerCol - 1] !== "wall") {
+                           playerCol--;
+                           leftPosition += gridSize;
+                           container.style.left = leftPosition + "px";
 
-            if (!main.classList.contains("success")) {
-               const key = event.key;
-               if (key === "ArrowUp") {
-                  if (playerRow > 0 && maze[playerRow - 1][playerCol] !== "wall") {
-                     playerRow--;
-                     topPosition += gridSize;
-                     container.style.top = topPosition + "px";
+                           main.classList.add("flip");
+                           movementCount += gridSize;
+
+                        }
+                     } else if (key === "ArrowRight") {
+                        if (playerCol < maze[0].length - 1 && maze[playerRow][playerCol + 1] !== "wall") {
+                           playerCol++;
+
+                           if (leftPosition >= -(gridSize * endpoint.x)) {
+                              leftPosition -= gridSize;
+                              leftPosition == -(gridSize * endpoint.x);
+                              container.style.left = leftPosition + "px";
+                           }
+
+                           main.classList.remove("flip");
+                           movementCount += gridSize;
+                        }
+                     }
                   }
-               } else if (key === "ArrowDown") {
-                  if (playerRow < maze.length - 1 && maze[playerRow + 1][playerCol] !== "wall") {
-                     playerRow++;
-                     topPosition -= gridSize;
-                     container.style.top = topPosition + "px";
+
+                  const portal_1 = { x: 4, y: (7 - 1) };
+                  const portal_2 = { x: 0, y: (5 + 1) };
+
+                  if (maze[playerRow][playerCol] === "path_treasure") {
+                     showTrivia(playerCol, playerRow);
+                     isTriviaActive = true;
                   }
-               } else if (key === "ArrowLeft") {
-                  if (playerCol > 0 && maze[playerRow][playerCol - 1] !== "wall") {
-                     playerCol--;
-                     leftPosition += gridSize;
-                     container.style.left = leftPosition + "px";
+                  if (maze[playerRow][playerCol] === "path_portal_1") {
+                     playerCol = portal_2.x;
+                     playerRow = portal_2.y;
+                     leftPosition = - (portal_2.x) * gridSize;
+                     topPosition = - (portal_2.y) * gridSize;
 
-                     main.classList.add("flip");
-
-                  }
-               } else if (key === "ArrowRight") {
-                  if (playerCol < maze[0].length - 1 && maze[playerRow][playerCol + 1] !== "wall") {
-                     playerCol++;
-
-                     if (leftPosition >= -(gridSize * endpoint.x)) {
-                        leftPosition -= gridSize;
-                        leftPosition == -(gridSize * endpoint.x);
+                     setTimeout(() => {
+                        main.classList.add("portal");
+                        container.classList.add("no_animation");
+                        container.style.top = topPosition + "px";
                         container.style.left = leftPosition + "px";
+                        return false;
+                     }, 1000);
+                     setTimeout(() => {
+                        main.classList.remove("portal");
+                        container.classList.remove("no_animation");
+                        return false;
+                     }, 2500);
+                  }
+                  else if (maze[playerRow][playerCol] === "path_portal_2") {
+                     playerCol = portal_1.x;
+                     playerRow = portal_1.y;
+                     leftPosition = - (portal_1.x) * gridSize;
+                     topPosition = - (portal_1.y) * gridSize;
+
+                     setTimeout(() => {
+                        main.classList.add("portal");
+                        container.classList.add("no_animation");
+                        container.style.top = topPosition + "px";
+                        container.style.left = leftPosition + "px";
+
+                        return false;
+                     }, 1000);
+                     setTimeout(() => {
+                        main.classList.remove("portal");
+                        container.classList.remove("no_animation");
+                        return false;
+                     }, 2500);
+                  }
+                  else if (maze[playerRow][playerCol] === "end") {
+                     if (chokoCount == winCount) {
+                        setTimeout(() => {
+                           main.classList.add("success");
+                           container.style.left = -(gridSize * endpoint.x) + "px";
+
+
+                           setTimeout(() => {
+                              document.querySelector("#gameOngoing").style.display = 'none';
+                              document.querySelector(".main").classList.add("to-back");
+
+                              showToast();
+                           }, 1000);
+                           return false;
+                        }, 1000);
+                     } else {
+                        playerCol = portal_2.x;
+                        playerRow = portal_2.y;
+                        leftPosition = - (portal_2.x) * gridSize;
+                        topPosition = - (portal_2.y) * gridSize;
+
+                        setTimeout(() => {
+                           main.classList.add("portal");
+                           container.classList.add("no_animation");
+                           container.style.top = topPosition + "px";
+                           container.style.left = leftPosition + "px";
+                           return false;
+                        }, 1000);
+                        setTimeout(() => {
+                           main.classList.remove("portal");
+                           container.classList.remove("no_animation");
+                           return false;
+                        }, 2500);
                      }
 
-                     main.classList.remove("flip");
+                  }
+
+                  if (movementCount >= 1800 && chokoCount < winCount) {
+                     showTrivia(playerCol, playerRow);
+                     isTriviaActive = true;
+                     movementCount = 0; // reset movement
                   }
                }
-
-              
-
-               const portal_1 = { x: 4, y: (7-1) };
-               const portal_2 = { x: 0, y: (5+1) };
-
-               if (maze[playerRow][playerCol] === "path_treasure") {
-                  showTrivia();
-               }
-               if(maze[playerRow][playerCol] === "path_portal_1"){
-                  playerCol = portal_2.x;
-                  playerRow = portal_2.y;
-                  leftPosition = - (portal_2.x) * gridSize;
-                  topPosition = - (portal_2.y)  * gridSize;
-                 
-                  setTimeout(() => {
-                     main.classList.add("portal");
-                     container.classList.add("no_animation");
-                     container.style.top = topPosition + "px";
-                     container.style.left = leftPosition + "px";
-                     return false;
-                  }, 1000);
-                  setTimeout(() => {
-                     main.classList.remove("portal");
-                     container.classList.remove("no_animation");
-                     return false;
-                  }, 2500);
-               }
-               else if(maze[playerRow][playerCol] === "path_portal_2"){
-                  playerCol = portal_1.x;
-                  playerRow = portal_1.y;
-                  leftPosition = - (portal_1.x) * gridSize;
-                  topPosition = - (portal_1.y)  * gridSize;
-                 
-                  setTimeout(() => {
-                     main.classList.add("portal");
-                     container.classList.add("no_animation");
-                     container.style.top = topPosition + "px";
-                     container.style.left = leftPosition + "px";
-                    
-                     return false;
-                  }, 1000);
-                  setTimeout(() => {
-                     main.classList.remove("portal");
-                     container.classList.remove("no_animation");
-                     return false;
-                  }, 2500);
-               }
-               else if (maze[playerRow][playerCol] === "end") {
-                  setTimeout(() => {
-                     main.classList.add("success");
-                     container.style.left = -(gridSize * endpoint.x) + "px";
-                     return false;
-                  }, 1000);
-               } 
-
             }
          });
 
@@ -217,40 +416,103 @@
       }
 
 
-      const triviaQuestions = [
-         {
-            question: "What is 2 + 2?",
-            options: ["3", "4", "5", "6"],
-            correct: 1, // Index of the correct option
-         },
-         // Add more questions
-      ];
+     
 
-      function showTrivia() {
-         const modal = document.getElementById("triviaModal");
-         const questionText = document.getElementById("questionText");
-         const answerButtons = document.querySelectorAll(".answer-btn");
 
-         const question = triviaQuestions[Math.floor(Math.random() * triviaQuestions.length)];
-         questionText.textContent = question.question;
-         answerButtons.forEach((button, index) => {
-            button.textContent = question.options[index];
-            button.dataset.correct = index === question.correct;
-            button.onclick = () => {
-               if (button.dataset.correct === "true") {
-                  alert("Correct!");
-                  modal.remove()
+      function showTrivia(playerCol, playerRow) {
+         const question = triviaQuestions[chokoCount];
+         document.getElementById('triviaQuestion').innerHTML = `<p>${question.question}</p>`;
+
+         const answerContainer = document.getElementById('answerButtons');
+         answerContainer.innerHTML = ""; // Clear previous answers
+
+         question.options.forEach((option, index) => {
+            let answerButton = document.createElement('button');
+            answerButton.classList.add('cute-answer-btn');
+            answerButton.textContent = option;
+            answerButton.dataset.correct = index === question.correct;
+            answerButton.onclick = () => {
+               if (index === question.correct) {
+                  // alert('Correct!');
+                  setTimeout(() => {
+                     chokoCount++;
+                     console.log(`Choko Count: ${chokoCount}`);
+                     closeModal();
+                     updateProgressModal(); // Show progress modal
+                     // Replace path_treasure with wall
+                     // if (maze[playerRow][playerCol] === "path_treasure") {
+                     //    // Update maze array
+                     //    maze[playerRow][playerCol] = "path_hori_lft";  // Change path_treasure to path_hori in the array
+
+                     //    // Update DOM
+                     //    var div_index = (5 * playerRow) + playerCol;
+                     //    document.querySelector('.container').childNodes[div_index].classList.add('path_hori_lft');
+                     //    document.querySelector('.container').childNodes[div_index].classList.remove('path_treasure');
+
+                     //    console.log({ playerCol: playerCol, playerRow: playerRow });
+                     //    console.log(document.querySelector('.container').childNodes[div_index]);
+                     // }
+
+                     isTriviaActive = false;
+                  }, 300);
+
+                  // setTimeout(() => {
+                  //    isTriviaActive = false;
+                  // }, 4000);
                } else {
-                  alert("Wrong! Try again.");
+                  alert('Wrong! Try again.');
                   window.location.reload();
                }
-               modal.style.display = "none";
             };
+            answerContainer.appendChild(answerButton);
          });
 
-         modal.style.display = "flex";
+         let triviaModal = new bootstrap.Modal(document.getElementById("triviaModal"));
+         triviaModal.show();
+      }
+
+      function openModal() {
+         document.getElementById("triviaModal").style.display = "block";
+      }
+
+      function closeModal() {
+         document.getElementById("triviaModal").style.display = "none";
+      }
+
+
+      function showToast() {
+         // Create the toast element
+         const toastElement = document.createElement('div');
+
+         // Add classes to make it a Bootstrap toast
+         toastElement.classList.add('toast', 'fade', 'show');
+         toastElement.style.maxWidth = '30vw';
+         toastElement.style.height = '30vh';
+         toastElement.style.position = 'absolute';
+         toastElement.style.top = '50%';
+         toastElement.style.left = '50%';
+         toastElement.style.transform = 'translate(-50%, -50%)'; // Center the toast
+
+         // Set the content of the toast
+         toastElement.innerHTML = `
+            <div class="toast-header">
+               <strong class="mr-auto">Congratulations! You finished the game!</strong>
+               <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+               <span aria-hidden="true">&times;</span>
+               </button>
+            </div>
+            <div class="toast-body">
+               You make me smile when we're chatting, playing games, or binge-watching series. I'm so grateful that you are my friend! Happy Valentine's Day! 💖
+            </div>
+         `;
+
+         // Get the container and append the toast
+         const toastContainer = document.getElementById('toast-container');
+         toastContainer.appendChild(toastElement);
+
       }
 
    </script>
 </body>
+
 </html>
